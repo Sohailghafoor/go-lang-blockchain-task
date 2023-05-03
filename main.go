@@ -135,4 +135,18 @@ func (b *Blockchain) IsValidProof(block Block, hash string) bool {
 }
 
 func (b *Blockchain) CheckChainValidity(chain []Block) bool {
-	previousHash :=
+    previousHash := ""
+    for _, block := range chain {
+        if block.Hash != block.ComputeHash() {
+            return false
+        }
+        if previousHash != block.PreviousHash {
+            return false
+        }
+        if !b.IsValidProof(block, block.Hash) {
+            return false
+        }
+        previousHash = block.Hash
+    }
+    return true
+}
